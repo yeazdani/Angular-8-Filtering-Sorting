@@ -1,4 +1,5 @@
 # Yeazdani
+Angular-8 Search and Sorting sample with the least requests for duplicate ids by handing multiple observables.
 see the live project  https://angular-filter-sorting-5b4fa.firebaseapp.com/
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.4.
