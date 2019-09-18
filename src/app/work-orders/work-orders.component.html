@@ -1,0 +1,46 @@
+<!--loading spinner -->
+<div *ngIf="spinner" class="row mt-3">
+    <div class="col text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+<!-- content -->
+<div class="row mt-3">
+    <div *ngFor="let order of mergedArray|filter:searchName" class="col-sm-12 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <div>
+                    <h5 class="card-title text-info">{{order?.name}}</h5>
+                    <h6 class="card-subtitle mb-2">Worker ID: {{order?.workerId}}</h6>
+                    <p class="card-text">{{order?.description}}</p>
+                    <div class="text-danger" role="alert">
+                        <strong>Deadline: </strong> {{order.deadline|date}}
+                    </div>
+                    <hr>
+                    <!-- worker section -->
+                    <div class="row">
+                        <div class="col-4">
+                            <img [src]="order?.image" class="rounded-circle img-thumbnail">
+                        </div>
+                        <div class="col-8 mt-3">
+                            <h5 class="card-title">{{order?.wname}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{order?.companyName}}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">{{order?.email}}</h6>
+                        </div>
+                    </div>
+                    <!-- time and deadline section -->
+                    <div class="row mt-3">
+                        <div class="col">
+                            <h6 class="card-subtitle mb-2 text-info text-right">
+                                {{order?.deadline|date:'shortDate'}}
+                                ,
+                                {{order?.deadline|date:'mediumTime'}}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
