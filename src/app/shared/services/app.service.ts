@@ -5,8 +5,8 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AppService {
-  workOrdersApi = "https://www.hatchways.io/api/assessment/work_orders";
-  workersApi = "https://www.hatchways.io/api/assessment/workers/";
+  workOrdersApi = "";
+  workersApi = "";
 
   workers: Worker[] = [];
   constructor(private http: HttpClient) { }
