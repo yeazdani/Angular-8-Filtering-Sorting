@@ -27,8 +27,8 @@ export class WorkOrdersComponent implements OnInit {
     this.appService.getWorkOrders().subscribe(
       res => {
         this.orders = res.orders;
-        this.fetchWorkerData();
         this.filterUniqueWorkerId();
+        this.fetchWorkerData();
       },
       err => {
         console.log(err)
@@ -49,39 +49,50 @@ export class WorkOrdersComponent implements OnInit {
   sortOrdersByEarliest() {
     this.mergedArray.sort((a, b) => a.deadline - b.deadline);
   }
-  // fetching all workers at once
+  // fetching all workers data of unique workerIds.
+  // Hence, this method will reduce/optimize http requests
   fetchWorkerData() {
     const workerRequests = [];
-    for (let index = 0; index < this.orders.length; index++) {
+    for (let index = 0; index < this.uniqueWorkerIds.length; index++) {
       workerRequests.push(this.appService
-        .getWorkers(this.orders[index].workerId));
+        .getWorkers(this.uniqueWorkerIds[index]));
     }
+    //forkJoin hadles multiple observables
     this.subscription = forkJoin(workerRequests).subscribe(res => {
       this.workers = res;
       this.mergeOrdersAndWorkers();
     });
   }
-  // this method merges orders and workers together
+
+  //this method merges orders and workers together
+  //also merges according to their worker ids
   mergeOrdersAndWorkers() {
-    for (let index = 0; index < this.workers.length; index++) {
-      const tempObj: any = {
-        deadline: this.orders[index].deadline,
-        description: this.orders[index].description,
-        id: this.orders[index].id,
-        name: this.orders[index].name,
-        workerId: this.orders[index].workerId,
-        companyName: this.workers[index].worker.companyName,
-        email: this.workers[index].worker.email,
-        wid: this.workers[index].worker.id,
-        image: this.workers[index].worker.image,
-        wname: this.workers[index].worker.name
-      };
-      this.mergedArray.push(tempObj);
+    for (let i = 0; i < this.orders.length; i++) {
+      for (let j = 0; j < this.workers.length; j++) {
+        if (this.orders[i].workerId === this.workers[j].worker.id) {
+          const tempObj: any = {
+            deadline: this.orders[i].deadline,
+            description: this.orders[i].description,
+            id: this.orders[i].id,
+            name: this.orders[i].name,
+            workerId: this.orders[i].workerId,
+            companyName: this.workers[j].worker.companyName,
+            email: this.workers[j].worker.email,
+            wid: this.workers[j].worker.id,
+            image: this.workers[j].worker.image,
+            wname: this.workers[j].worker.name
+          };
+          this.mergedArray.push(tempObj);
+        }
+      }
     }
     this.sortOrdersByEarliest();
     this.spinner = false;
   }
 
+  //all objects except singletons, 
+  //should be unsubscribed before the component's destruction
+  //it reduces memory leaks
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
